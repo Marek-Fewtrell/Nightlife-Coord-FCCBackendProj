@@ -11,7 +11,7 @@ app.use('/vue', express.static(__dirname + '/node_modules/vue/dist'));
 
 
 app.get('/', function(req, res, next) {
-  res.sendFile(process.cwd() + '/index.html')
+  res.sendFile('/public/index.html')
 })
 app.get('/test', function(req, res, next) {
   res.send("this works")
