@@ -17,6 +17,33 @@ app.get('/test', function(req, res, next) {
   res.send("this works")
 })
 
+//#######
+
+app.get('/places', function(req, res, next) {
+  var places = [
+    {
+      id: 1,
+      name: 'Place 1',
+      description: 'Description 1',
+      going: false
+    },
+    {
+      id: 2,
+      name: 'Place 2',
+      description: 'Description 2',
+      going: false
+    },
+    {
+      id: 3,
+      name: 'Place 3',
+      description: 'Description 3',
+      going: false
+    }
+  ]
+  res.send(places)
+})
+
+
 //---------------------------------------------------------
 
 

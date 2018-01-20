@@ -14,7 +14,22 @@
 
     <div id="main">
       <div id="app">
-        {{ message }}
+        Log In!
+        <hr>
+        Seach Place Names: <input type='text' v-model="searchString">
+        <ul>
+          <li v-for="place in filteredPlaces">
+            <div class="">
+              <h3>
+                {{ place.name }}
+                <!--<button v-on:click="place.going = place.going ? false : true">Going</button>-->
+                <button v-on:click="changeGoing(place.id)">Going</button>
+              </h3>
+              <p>{{ place.description }}</p>
+              <p v-if="place.going === true">You are going here</p>
+            </div>
+          </li>
+        </ul>
       </div>
     </div>
 
