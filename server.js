@@ -33,6 +33,7 @@ app.get('/test', function(req, res, next) {
 //#######
 
 app.get('/api/places', function(req, res, next) {
+  console.log("Got request for places.")
   var places = [
     {
       id: 1,
