@@ -6,7 +6,7 @@ var app = new Vue({
     loggedIn: false
   },
   created() {
-    fetch("/places")
+    fetch("/api/places")
       .then(response => response.json())
       .then(json => {
         console.log(json)

@@ -17,8 +17,13 @@
   },
   "homepage": "https://github.com/Marek-Fewtrell/Nightlife-Coord-FCCBackendProj#readme",
   "dependencies": {
+    "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
     "dotenv": "^4.0.0",
     "express": "^4.16.2",
-    "vue": "^2.5.13"
+    "jsonwebtoken": "^8.1.1",
+    "mongoose": "^5.0.1",
+    "vue": "^2.5.13",
+    "vue-router": "^3.0.1"
   }
 }

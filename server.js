@@ -1,11 +1,24 @@
 require('dotenv').load();
 const express = require('express')
 const path = require("path")
+const bodyParser = require('body-parser')
+const cors = require('cors')
+const mongoose = require('mongoose')
 
 const app = express()
+var jwt = require('jsonwebtoken')
+var config = require('./config')
+//var User = require('./models/user.js')
+
+mongoose.connect(config.database)
+app.set('superSecret', config.secret)
 
 app.use(express.static(path.join(__dirname, '/public')))
 app.use('/vue', express.static(__dirname + '/node_modules/vue/dist'));
+
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(cors())
 
 //---------------------------------------------------------
 
@@ -19,7 +32,7 @@ app.get('/test', function(req, res, next) {
 
 //#######
 
-app.get('/places', function(req, res, next) {
+app.get('/api/places', function(req, res, next) {
   var places = [
     {
       id: 1,

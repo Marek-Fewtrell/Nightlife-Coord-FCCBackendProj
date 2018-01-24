@@ -1,0 +1,42 @@
+<!doctype html>
+<head>
+  <title>Test Page</title>
+  <script src="/vue/vue.js"></script>
+  <link rel="stylesheet" href='/style.css'>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <div class="container">
+    <header id="header">
+      <h2>Nightlife Coordinator</h2>
+    </header>
+
+    <div id="main">
+      <div id="app">
+        Log In!
+        <hr>
+        Seach Place Names: <input type='text' v-model="searchString">
+        <ul>
+          <li v-for="place in filteredPlaces">
+            <div class="">
+              <h3>
+                {{ place.name }}
+                <!--<button v-on:click="place.going = place.going ? false : true">Going</button>-->
+                <button v-on:click="changeGoing(place.id)">Going</button>
+              </h3>
+              <p>{{ place.description }}</p>
+              <p v-if="place.going === true">You are going here</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <footer id="footer">
+    </footer>
+
+  </div>
+  <script src="/app.js"></script>
+</body>
+</html>
