@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
-import Places from '@/components/places'
+import Places from '@/components/Places'
+import LoginPage from '@/components/login'
+import {requireAuth} from '../../utils/auth'
+import SecretPage from '@/components/secret'
 
 Vue.use(Router)
 
@@ -9,13 +11,19 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'HelloWorld',
-      component: HelloWorld
-    },
-    {
-      path: '/places',
       name: 'Places',
       component: Places
+    },
+    {
+      path: '/login',
+      name: 'Login',
+      component: LoginPage
+    },
+    {
+      path: '/secret',
+      name: 'SecretPage',
+      beforeEnter: requireAuth,
+      component: SecretPage
     }
   ]
 })

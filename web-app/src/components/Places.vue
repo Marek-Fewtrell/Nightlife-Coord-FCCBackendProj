@@ -1,5 +1,7 @@
 <template>
+
   <div class="hello">
+    <app-nav></app-nav>
     <h1>{{ msg }}</h1>
 
     Log In!
@@ -18,11 +20,6 @@
         </div>
       </li>
     </ul>
-
-    <h2>Essential Links</h2>
-
-    <h2>Ecosystem</h2>
-
   </div>
 </template>
 
@@ -31,7 +28,7 @@ import AppNav from './AppNav'
 import { getPlacesApi } from '../../utils/apis'
 
 export default {
-  name: 'HelloWorld',
+  name: 'Places',
   components: {
     AppNav
   },

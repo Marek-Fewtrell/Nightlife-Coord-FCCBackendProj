@@ -5,18 +5,22 @@
     </div>
     <ul class="nav navbar-nav navbar-right">
       <li>
-        <button class="btn btn-danger log" >Log out </button>
-        <button class="btn btn-info log" >Log In</button>
-        <router-link to="" class="btn btn-info log">Login</router-link>
+        <!--<button class="btn btn-danger log" v-show="isLoggedIn()" @click="handleLogout()">Log out </button>
+        <button class="btn btn-info log" v-show="!isLoggedIn()" @click="handleLogin()">Log In</button>-->
+        <router-link to="/login" class="btn btn-info log" v-show="!isLoggedIn()">Login</router-link>
       </li>
     </ul>
   </nav>
 </template>
 
 <script>
+import { isLoggedIn } from '../../utils/auth'
 export default {
   name: 'app-nav',
   methods: {
+    isLoggedIn () {
+      return isLoggedIn()
+    }
   }
 }
 </script>
