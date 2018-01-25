@@ -3,12 +3,12 @@
   <div class="hello">
     <app-nav></app-nav>
     <h1>{{ msg }}</h1>
-
-    Log In!
     <hr>
+
     Seach Place Names: <input type='text' v-model="searchString">
-    <ul>
-      <li v-for="place in filteredPlaces" :key='place.id'>
+    <p v-show="!isLoggedIn()">Log in to indicate where you are going.</p>
+    <div class="holder">
+      <div v-for="place in filteredPlaces" :key='place.id'>
         <div class="">
           <h3>
             {{ place.name }}
@@ -18,14 +18,16 @@
           <p>{{ place.description }}</p>
           <p v-if="place.going === true">You are going here</p>
         </div>
-      </li>
-    </ul>
+      </div>
+    </div>
+
   </div>
 </template>
 
 <script>
 import AppNav from './AppNav'
-import { getPlacesApi } from '../../utils/apis'
+import { isLoggedIn, getAccessToken } from '../../utils/auth'
+import { getPlacesApi, putAttendanceApi } from '../../utils/apis'
 
 export default {
   name: 'Places',
@@ -34,7 +36,7 @@ export default {
   },
   data () {
     return {
-      msg: 'Testing this still',
+      msg: 'Nightlife Places',
       places: [],
       searchString: ''
     }
@@ -44,6 +46,9 @@ export default {
     this.getPlaces()
   },
   methods: {
+    isLoggedIn () {
+      return isLoggedIn()
+    },
     getPlaces () {
       console.log('in getPlaces getting data')
       getPlacesApi().then((places) => {
@@ -53,6 +58,14 @@ export default {
       })
     },
     changeGoing: function (placeId) {
+      if (!isLoggedIn()) {
+        if (this.searchString === '') {
+          this.$router.push({ path: 'Login' })
+        } else {
+          this.$router.push({ path: 'Login', query: { search: this.searchString } })
+        }
+        return
+      }
       var placesIndex = -1
       for (var i = 0; i < this.places.length; i++) {
         if (this.places[i].id === placeId) {
@@ -60,6 +73,16 @@ export default {
           break
         }
       }
+      var userAttendance = false
+      if (this.places[placesIndex].going) {
+        userAttendance = false
+      } else {
+        userAttendance = true
+      }
+      putAttendanceApi(placeId, getAccessToken(), userAttendance).then((result) => {
+        console.log('putAttendanceApi result')
+        console.log(result)
+      })
 
       if (this.places[placesIndex].going) {
         this.places[placesIndex].going = false

@@ -9,6 +9,7 @@ const app = express()
 var jwt = require('jsonwebtoken')
 var config = require('./config')
 var User = require('./user.js')
+var Attendance = require('./attendance.js')
 
 mongoose.connect(config.database)
 app.set('superSecret', config.secret)
@@ -63,7 +64,7 @@ app.post('/authenticate', function(req, res, next) {
         // create a token with only our given payload
         // we don't want to pass in the entire user since that has the password
         const payload = {
-          admin: user.admin
+          userId: user._id
         };
         var token = jwt.sign(payload, app.get('superSecret')/*, {
           expiresInMinutes: 1440 // expires in 24 hours
@@ -125,6 +126,26 @@ app.get('/api/places', function(req, res, next) {
     }
   ]
   res.send(places)
+})
+
+//#######
+
+app.put('/api/attendance', function(req, res, next) {
+  console.log(req.body)
+  console.log("Got request for attendance.")
+  return
+  var attending = new Attendance({
+    userId: 1, //TODO replace this with token stuff.
+    placeId: req.body.placeId,
+    attend: req.body.userAttendance
+  })
+
+  attending.save(function(err) {
+    if (err) throw err
+
+    console.log('Attendance saved successfully')
+    res.json({success: true})
+  })
 })
 
 

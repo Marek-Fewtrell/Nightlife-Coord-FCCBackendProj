@@ -2,68 +2,44 @@
 <template>
   <div>
     <app-nav></app-nav>
-    <h3 class="text-center">Login/Register</h3>
-    <hr/>
+    <!--<h3 class="text-center" v:model=''>Login/Register</h3>
+    <hr/>-->
 
-    <div class="col-sm-12">
-      <div class="jumbotron text-center" v-if="!isLoggedIn()">
-      <ul class="form-switcher">
-        <li v-on:click.prevent= "flip('register')"><a href="" id="register-form">Register</a></li>
-        <li v-on:click.prevent= "flip('login')"><a href="" id="login-form">Login</a></li>
-      </ul>
+    <div class="col-sm-12" v-if="!isLoggedIn()">
 
-      <div class="form-register" id="form-register">
-        <h2>Test</h2>
-        <div class="error-message" v-text="registerError"></div>
-        <input type="text" name="username" placeholder="Username" v-model="registerUsername">
-        <input type="password" name="password" placeholder="Password" v-model="registerPassword">
-        <input type="password" name="passwordconfirm" placeholder="Password Confirm" v-model="registerPasswordConfirm">
-        <input type="submit" v-on:click="submit('register')" v-model="registerSubmit" id="registerSubmit">
-        <div class="links">
-          <a href="" v-on:click="flip('login', $event)">Already have an account?</a>
-        </div>
-      </div>
-      <div class="form-login active" id="form-login">
-        <h2>Test 2</h2>
-        <div class="error-message" v-text="loginError"></div>
-        <input type="text" name="username" placeholder="Username" v-model="loginUsername">
-        <input type="password" name="password" placeholder="Password" v-model="loginPassword">
-        <input type="submit" v-on:click="submit('login')" v-model="loginSubmit"  id="loginSubmit">
-        <div class="links">
-          <a href="" v-on:click="flip('password', $event)">Forgot your password?</a>
-        </div>
-      </div>
+      <div class="jumbotron text-center">
+        <ul class="form-switcher">
+          <li v-on:click.prevent= "flip('register')"><a href="" id="register-form">Register</a></li>
+          <li v-on:click.prevent= "flip('login')"><a href="" id="login-form">Login</a></li>
+        </ul>
 
-      <div class="form-password" id="form-password">
-
-      </div>
-
-        <!--<div class="main-form">
-
-          <div id="form-login-holder" class="main-form-row">
-            <h2>Login</h2>
-            <div class="main-form-login">
-              <form name="loginForm" method="post">
-                <div>
-                  <label for="username">Username</label>
-                  <input type="text" name="username" />
-                </div>
-                <div>
-                  <label for="password">Password</label>
-                  <input type="password" name="password" />
-                </div>
-                <div>
-                  <input type="submit" value="Login" />
-                </div>
-              </form>
-            </div>
+        <div class="form-register" id="form-register">
+          <h2>Test</h2>
+          <div class="error-message" v-text="registerError"></div>
+          <input type="text" name="username" placeholder="Username" v-model="registerUsername">
+          <input type="password" name="password" placeholder="Password" v-model="registerPassword">
+          <input type="password" name="passwordconfirm" placeholder="Password Confirm" v-model="registerPasswordConfirm">
+          <input type="submit" v-on:click="submit('register')" v-model="registerSubmit" id="registerSubmit">
+          <div class="links">
+            <a href="" v-on:click="flip('login', $event)">Already have an account?</a>
           </div>
-        </div>-->
-
+        </div>
+        <div class="form-login active" id="form-login">
+          <h2>Test 2</h2>
+          <div class="error-message" v-text="loginError"></div>
+          <input type="text" name="username" placeholder="Username" v-model="loginUsername">
+          <input type="password" name="password" placeholder="Password" v-model="loginPassword">
+          <input type="submit" v-on:click="submit('login')" v-model="loginSubmit"  id="loginSubmit">
+          <div class="links">
+            <a href="" v-on:click="flip('password', $event)">Forgot your password?</a>
+          </div>
+        </div>
+        <div class="form-password" id="form-password">
+        </div>
       </div>
-      <div class="jumbotron text-center" v-else>
-        <h2>Something else about loggin in.</h2>
-      </div>
+    </div>
+    <div class="jumbotron text-center" v-else>
+      <h2>You have already logged in.</h2>
     </div>
   </div>
 </template>
@@ -118,6 +94,7 @@ export default {
           password: this.loginPassword
         }
         loginCreds(credentials)
+        // this.$router.push('/')
       } else if (which === 'register') {
         if (this.registerPassword === this.registerPasswordConfirm) {
           credentials = {

@@ -19,7 +19,7 @@ export function loginCreds(credentials) {
     if (response.data.success == true) {
       setIdToken('user')
       setAccessToken(response.data.token)
-      router.go('/')
+      router.push('Places')
     } else {
       console.log("login creds was unsuccessful.")
     }
