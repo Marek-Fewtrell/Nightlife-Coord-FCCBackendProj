@@ -4,6 +4,7 @@ import Places from '@/components/Places'
 import LoginPage from '@/components/login'
 import {requireAuth} from '../../utils/auth'
 import SecretPage from '@/components/secret'
+import BasicPage from '@/components/basic'
 
 Vue.use(Router)
 
@@ -24,6 +25,11 @@ export default new Router({
       name: 'SecretPage',
       beforeEnter: requireAuth,
       component: SecretPage
+    },
+    {
+      path: '/basic',
+      name: 'Basic',
+      component: BasicPage
     }
   ]
 })

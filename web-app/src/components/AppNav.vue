@@ -2,11 +2,13 @@
   <nav class="navbar navbar-default">
     <div class="navbar-header">
       <router-link to="/" class="navbar-brand"> Nightlife Coord</router-link>
+      <router-link to="/basic" class="navbar-brand">Basic</router-link>
+      <router-link to="/secret" class="navbar-brand">Secret</router-link>
     </div>
     <ul class="nav navbar-nav navbar-right">
       <li>
-        <!--<button class="btn btn-danger log" v-show="isLoggedIn()" @click="handleLogout()">Log out </button>
-        <button class="btn btn-info log" v-show="!isLoggedIn()" @click="handleLogin()">Log In</button>-->
+        <button class="btn btn-danger log" v-show="isLoggedIn()" @click="handleLogout()">Log out </button>
+        <!--<button class="btn btn-info log" v-show="!isLoggedIn()" @click="handleLogin()">Log In</button>-->
         <router-link to="/login" class="btn btn-info log" v-show="!isLoggedIn()">Login</router-link>
       </li>
     </ul>
@@ -14,12 +16,15 @@
 </template>
 
 <script>
-import { isLoggedIn } from '../../utils/auth'
+import { isLoggedIn, logout } from '../../utils/auth'
 export default {
   name: 'app-nav',
   methods: {
     isLoggedIn () {
       return isLoggedIn()
+    },
+    handleLogout () {
+      return logout()
     }
   }
 }

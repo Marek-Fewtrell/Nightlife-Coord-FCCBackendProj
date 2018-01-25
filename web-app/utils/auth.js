@@ -42,7 +42,7 @@ export function register(credentials) {
 export function requireAuth(to, from, next) {
   if (!isLoggedIn()) {
     next({
-      path: '/',
+      path: '/login',
       query: { redirect: to.fullPath }
     });
   } else {

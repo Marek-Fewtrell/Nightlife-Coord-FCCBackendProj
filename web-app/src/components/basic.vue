@@ -1,12 +1,12 @@
 <template>
   <div>
     <app-nav></app-nav>
-    <h3 class="text-center">Secret Page</h3>
+    <h3 class="text-center">Basic Page</h3>
     <hr/>
 
     <div class="col-sm-12">
-      <div class="jumbotron text-center" v-show='isLoggedIn()'>
-        <h2>You are successfully authorised and logged in.</h2>
+      <div class="jumbotron text-center">
+        <h2>You are on basic page.</h2>
       </div>
     </div>
   </div>
@@ -14,17 +14,13 @@
 
 <script>
 import AppNav from './AppNav'
-import { isLoggedIn } from '../../utils/auth'
 
 export default {
-  name: 'SecretPage',
+  name: 'BasicPage',
   components: {
     AppNav
   },
   methods: {
-    isLoggedIn () {
-      return isLoggedIn()
-    }
   }
 }
 </script>

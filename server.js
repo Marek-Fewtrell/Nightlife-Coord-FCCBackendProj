@@ -8,7 +8,7 @@ const mongoose = require('mongoose')
 const app = express()
 var jwt = require('jsonwebtoken')
 var config = require('./config')
-//var User = require('./models/user.js')
+var User = require('./user.js')
 
 mongoose.connect(config.database)
 app.set('superSecret', config.secret)
@@ -28,6 +28,76 @@ app.get('/', function(req, res, next) {
 })
 app.get('/test', function(req, res, next) {
   res.send("this works")
+})
+
+//########
+
+app.post('/authenticate', function(req, res, next) {
+  //console.log(req.body.loginCredentials)
+  console.log("Authenticating user. /authenticate")
+  User.findOne({
+    username: req.body.loginCredentials.username
+  }, function(err, user) {
+    if (err) throw err
+
+    if (!user) {
+      res.json({success: false, message: 'Authenticationg Failed. User not found.'})
+      /*const payload = {
+        admin: true
+      };
+      var token = jwt.sign(payload, app.get('superSecret'), {
+
+      });
+      res.json({
+        success: true,
+        message: 'Enjoy your token!',
+        token: token
+      });*/
+    } else if (user) {
+      // check if password matches
+      if (user.password != req.body.loginCredentials.password) {
+        res.json({ success: false, message: 'Authentication failed. Wrong password.' });
+      } else {
+
+        // if user is found and password is right
+        // create a token with only our given payload
+        // we don't want to pass in the entire user since that has the password
+        const payload = {
+          admin: user.admin
+        };
+        var token = jwt.sign(payload, app.get('superSecret')/*, {
+          expiresInMinutes: 1440 // expires in 24 hours
+        }*/);
+
+        // return the information including token as JSON
+        res.json({
+          success: true,
+          message: 'Enjoy your token!',
+          token: token
+        });
+      }
+
+    }
+  })
+})
+
+app.post('/register', function(req, res, next) {
+  console.log("Registering user. /register")
+  console.log(req.body.registerCredentials)
+
+  var person = new User({
+    username: req.body.registerCredentials.username,
+    password: req.body.registerCredentials.password,
+    admin: true
+  })
+
+  person.save(function(err) {
+    if (err) throw err
+
+    console.log('User saved successfully')
+    res.json({success: true})
+  })
+
 })
 
 //#######
