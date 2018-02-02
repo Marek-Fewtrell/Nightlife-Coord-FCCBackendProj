@@ -13,10 +13,10 @@
           <h3>
             {{ place.name }}
             <!--<button v-on:click="place.going = place.going ? false : true">Going</button>-->
-            <button v-on:click="changeGoing(place.id)">Going</button>
+            <button v-on:click="changeGoing(place.id)"> <span v-if="place.going">Stop Going</span><span v-else>Going</span> </button>
           </h3>
           <p>{{ place.description }}</p>
-          <p v-if="place.going === true">You are going here</p>
+          <p v-if="place.going == true">You are going here</p>
         </div>
       </div>
     </div>
@@ -37,8 +37,7 @@ export default {
   data () {
     return {
       msg: 'Nightlife Places',
-      places: [],
-      searchString: ''
+      places: []
     }
   },
   mounted () {
@@ -93,6 +92,14 @@ export default {
     }
   },
   computed: {
+    searchString: {
+      get: function () {
+        return this.$store.getters.searchString
+      },
+      set: function (newValue) {
+        this.$store.commit('update', newValue)
+      }
+    },
     filteredPlaces: function () {
       var self = this
       return this.places.filter(

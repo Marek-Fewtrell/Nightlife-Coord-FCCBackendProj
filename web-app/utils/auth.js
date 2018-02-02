@@ -64,11 +64,11 @@ export function getAccessToken() {
   return localStorage.getItem(ACCESS_TOKEN_KEY);
 }
 
-function clearIdToken() {
+export function clearIdToken() {
   localStorage.removeItem(ID_TOKEN_KEY);
 }
 
-function clearAccessToken() {
+export function clearAccessToken() {
   localStorage.removeItem(ACCESS_TOKEN_KEY);
 }
 

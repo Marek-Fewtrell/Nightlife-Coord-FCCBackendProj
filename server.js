@@ -21,6 +21,46 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cors())
 
+var places = [
+  {
+    id: 1,
+    name: 'Place 1',
+    description: 'Description 1',
+    going: false
+  },
+  {
+    id: 2,
+    name: 'Place 2',
+    description: 'Description 2',
+    going: false
+  },
+  {
+    id: 3,
+    name: 'Place 3',
+    description: 'Description 3',
+    going: false
+  }
+]
+
+function resultData(success, message, others) {
+  var returnData = {
+    success: success,
+    message: message
+  }
+  if (others.hasOwnProperty('places')) {
+    returnData['places'] = others.places
+  }
+  if (others.hasOwnProperty('authenticate')) {
+    returnData['authenticate'] = others.authenticate
+  }
+  if (others.hasOwnProperty('token')) {
+    returnData['token'] = others.token
+  }
+
+  return returnData
+}
+
+
 //---------------------------------------------------------
 
 
@@ -42,22 +82,11 @@ app.post('/authenticate', function(req, res, next) {
     if (err) throw err
 
     if (!user) {
-      res.json({success: false, message: 'Authenticationg Failed. User not found.'})
-      /*const payload = {
-        admin: true
-      };
-      var token = jwt.sign(payload, app.get('superSecret'), {
-
-      });
-      res.json({
-        success: true,
-        message: 'Enjoy your token!',
-        token: token
-      });*/
+      res.json(resultData(false, 'Authenticationg Failed. User not found.'))
     } else if (user) {
       // check if password matches
       if (user.password != req.body.loginCredentials.password) {
-        res.json({ success: false, message: 'Authentication failed. Wrong password.' });
+        res.json(resultData(false, 'Authentication failed. Wrong password/username.', null))
       } else {
 
         // if user is found and password is right
@@ -66,11 +95,12 @@ app.post('/authenticate', function(req, res, next) {
         const payload = {
           userId: user._id
         };
-        var token = jwt.sign(payload, app.get('superSecret')/*, {
-          expiresInMinutes: 1440 // expires in 24 hours
-        }*/);
+        var token = jwt.sign(payload, app.get('superSecret'), {
+          expiresIn: '24h' // expires in 24 hours
+        });
 
         // return the information including token as JSON
+        //res.json(resultData(true, 'Enjoy your token!'))
         res.json({
           success: true,
           message: 'Enjoy your token!',
@@ -96,58 +126,169 @@ app.post('/register', function(req, res, next) {
     if (err) throw err
 
     console.log('User saved successfully')
-    res.json({success: true})
+    res.json(resultData(true, 'Register Successfull.', null))
+    //res.json({success: true})
   })
 
 })
 
 //#######
 
-app.get('/api/places', function(req, res, next) {
-  console.log("Got request for places.")
-  var places = [
-    {
-      id: 1,
-      name: 'Place 1',
-      description: 'Description 1',
-      going: false
-    },
-    {
-      id: 2,
-      name: 'Place 2',
-      description: 'Description 2',
-      going: false
-    },
-    {
-      id: 3,
-      name: 'Place 3',
-      description: 'Description 3',
-      going: false
+app.use(function(req,res,next) {
+  console.log("in token management middleware function.")
+  var token = null
+  if (req.headers['authorization']) {
+    //var token = req.body.token || req.query.token || header
+    token = req.headers['authorization'].split(' ')[1]
+  }
+
+  req.userToken = {
+    present: false,
+    decoded: null,
+    error: false
+  }
+  if (token) {
+    console.log("Token present. Verifying token.")
+    jwt.verify(token, app.get('superSecret'), function(err, decoded) {
+      if (err) {
+        console.log("Error in verifying token")
+        if (err.name != 'TokenExpiredError') {
+          console.log(err)
+        }
+        req.userToken.error = err
+        //req.userToken.present = false
+      } else {
+        console.log("Token correctly verified.")
+        // if everything is good, save to request for use in other routes
+        req.userToken.present = true
+        req.userToken.decoded = decoded;
+      }
+    });
+  } else {
+    console.log("No token provided.")
+    // if there is no token
+    //req.userToken.present = false
+  }
+  next()
+})
+
+//#######
+
+app.get('/api/places',
+  function (req, res, next) {
+    //console.log(req.headers)
+    //console.log("Got request for places.")
+    if (req.userToken && req.userToken.present === true) {
+      console.log("Authorized access")
+      next('route')
+    } else {
+      console.log("Not authorized access")
+      next()
     }
-  ]
-  res.send(places)
-})
+  },
+  function(req, res, next) {
+    console.log("This should be the normal unauthorised route.")
+    var returnData = resultData(true, 'Got some places.', {places: places})
+    if (req.userToken.error.hasOwnProperty['name'] && req.userToken.error.name === 'TokenExpiredError') {
+      returnData = resultData(true, 'Got some places.', {places: places, token: false})
+    }
+    return res.json(returnData)
+    //return res.send({success: true, message: 'Got some places', places: places})
+  }
+)
 
-//#######
-
-app.put('/api/attendance', function(req, res, next) {
-  console.log(req.body)
-  console.log("Got request for attendance.")
-  return
-  var attending = new Attendance({
-    userId: 1, //TODO replace this with token stuff.
-    placeId: req.body.placeId,
-    attend: req.body.userAttendance
-  })
-
-  attending.save(function(err) {
+app.get('/api/places', function (req, res, next) {
+  console.log('This should be the authorised route.')
+  console.log("decoded userId:" + req.userToken.decoded)
+  Attendance.find({userId: req.userToken.decoded.userId}, function(err, result) {
     if (err) throw err
 
-    console.log('Attendance saved successfully')
-    res.json({success: true})
+    if (!result) {
+      console.log("result doesn't exist.")
+      //res.json({success: false, message: 'Authenticationg Failed. User not found.'})
+      //res.send(places)
+      res.json(resultData(true, 'Got some places.', {places: places}))
+    } else if (result) {
+      console.log('Results exists')
+      console.log(result)
+      for (var i = 0; i < places.length; i++) {
+        for (var k = 0; k < result.length; k++) {
+          if (places[i].id == result[k].placeId) {
+            console.log("found match")
+            places[i].going = result[k].attend
+          }
+        }
+      }
+      console.log(places)
+    }
   })
+
+  //res.send(places)
+  res.json(resultData(true, 'Got some places.', {places: places}))
 })
 
+//#######
+
+app.use(function(req,res,next) {
+  console.log("in middleware function.")
+  console.log(req.userToken)
+  if (req.userToken.error) {
+    console.log("Error with auth and token.")
+  } else if (req.userToken && req.userToken.present === true) {
+    //console.log(req.userToken.decoded)
+    console.log("Token present.")
+    return next()
+  } else {
+    console.log("Token not found.")
+    // if there is no token
+    // return an error
+  }
+  return res.json(resultData(false, 'You don\'t have authorisation.'))
+  //return res.json({success: false, message: 'You don\'t have authorisation.'})
+
+})
+
+app.put('/api/attendance', function(req, res, next) {
+  console.log("Got request for attendance.")
+  console.log(req.userToken.decoded)
+
+  Attendance.findOne({
+      userId: req.userToken.decoded.userId,
+      placeId: req.body.placeId
+    }, function(err, result) {
+      if (err) throw err
+
+      if (!result) {
+        console.log("result doesn't exist.")
+        //res.json({success: false, message: 'Authenticationg Failed. User not found.'})
+        var attending = new Attendance({
+          userId: req.userToken.decoded.userId, //TODO replace this with token stuff.
+          placeId: req.body.placeId,
+          attend: req.body.userAttendance
+        })
+
+        attending.save( function(err) {
+          if (err) throw err
+
+          console.log('Attendance saved successfully')
+          //return res.json({success: true})
+          return res.json(resultData(true, 'Attendance saved successfully'))
+        })
+      } else if (result) {
+        console.log('Result exists')
+        console.log(result)
+        //return deleteAttendanceApi(Attendance, result, res)
+        Attendance.deleteOne({
+          _id: result._id
+        }, function(err) {
+          if (err) throw err
+          console.log("Deleted single attendance.")
+          //return res.send({success: true, message: 'Attendance successfully removed.'})
+          return res.json(resultData(true, 'Attendance successfully removed.'))
+        })
+      }
+    })
+})
 
 //---------------------------------------------------------
 
