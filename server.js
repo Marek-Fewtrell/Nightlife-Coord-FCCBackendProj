@@ -42,19 +42,21 @@ var places = [
   }
 ]
 
-function resultData(success, message, others) {
+function resultData(success, message, others = null) {
   var returnData = {
     success: success,
     message: message
   }
-  if (others.hasOwnProperty('places')) {
-    returnData['places'] = others.places
-  }
-  if (others.hasOwnProperty('authenticate')) {
-    returnData['authenticate'] = others.authenticate
-  }
-  if (others.hasOwnProperty('token')) {
-    returnData['token'] = others.token
+  if (others !== null) {
+    if (others.hasOwnProperty('places')) {
+      returnData['places'] = others.places
+    }
+    if (others.hasOwnProperty('authenticate')) {
+      returnData['authenticate'] = others.authenticate
+    }
+    if (others.hasOwnProperty('token')) {
+      returnData['token'] = others.token
+    }
   }
 
   return returnData
@@ -82,7 +84,7 @@ app.post('/authenticate', function(req, res, next) {
     if (err) throw err
 
     if (!user) {
-      res.json(resultData(false, 'Authenticationg Failed. User not found.'))
+      res.json(resultData(false, 'Authenticationg Failed. Wrong password/username.'))
     } else if (user) {
       // check if password matches
       if (user.password != req.body.loginCredentials.password) {
@@ -100,12 +102,12 @@ app.post('/authenticate', function(req, res, next) {
         });
 
         // return the information including token as JSON
-        //res.json(resultData(true, 'Enjoy your token!'))
-        res.json({
+        res.json(resultData(true, 'Login Successfull', {token: token}))
+        /*res.json({
           success: true,
           message: 'Enjoy your token!',
           token: token
-        });
+        });*/
       }
 
     }
@@ -243,7 +245,7 @@ app.use(function(req,res,next) {
     // if there is no token
     // return an error
   }
-  return res.json(resultData(false, 'You don\'t have authorisation.'))
+  return res.json(resultData(false, 'You don\'t have authorisation.', {authenticate: false, token: false}))
   //return res.json({success: false, message: 'You don\'t have authorisation.'})
 
 })

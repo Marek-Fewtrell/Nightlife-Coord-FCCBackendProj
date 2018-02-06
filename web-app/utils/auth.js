@@ -19,9 +19,11 @@ export function loginCreds(credentials) {
     if (response.data.success == true) {
       setIdToken('user')
       setAccessToken(response.data.token)
-      router.push('Places')
+      //router.push('Places')
+      return response.data
     } else {
       console.log("login creds was unsuccessful.")
+      return response.data
     }
   })
 }
@@ -33,8 +35,10 @@ export function register(credentials) {
     console.log(response.data)
     if (response.data.success == true) {
       console.log("Register successful.")
+      return response.data
     } else {
       console.log("Register was unsuccessful.")
+      return resposne.data
     }
   })
 }

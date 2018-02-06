@@ -1,0 +1,21 @@
+A list of guides and tutorials used to help create this app.
+
+Crafting a Login Modal with Vuejs
+Luke Evers
+17 August 2015
+https://lukevers.com/2015/08/17/crafting-a-login-modal-with-vuejs
+
+Token-Based Authentication with Node
+Michael Herman
+Oct 28, 2016
+http://mherman.org/blog/2016/10/28/token-based-authentication-with-node/#jwt-setup
+
+Build an App with Vue.js: From Authentication to Calling an API
+Ryan Chenkie
+November 16, 2015
+https://auth0.com/blog/build-an-app-with-vuejs/
+
+Vuejs 2 Authentication Tutorial
+Prosper Otemuyiwa
+April 18, 2017
+https://auth0.com/blog/vuejs2-authentication-tutorial/

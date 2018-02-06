@@ -94,6 +94,12 @@ export default {
           password: this.loginPassword
         }
         loginCreds(credentials)
+        // console.log(loginResult)
+        /*
+        loginCreds(credentials).then(function (loginResult) {
+          console.log('In loginCreds then')
+          this.loginError = loginResult.message
+        }) */
         // this.$router.push('/')
       } else if (which === 'register') {
         if (this.registerPassword === this.registerPasswordConfirm) {
@@ -101,7 +107,9 @@ export default {
             username: this.registerUsername,
             password: this.registerPassword
           }
-          register(credentials)
+          register(credentials).then(function (registerResult) {
+            this.registerError = registerResult.message
+          })
         }
       }
     },
