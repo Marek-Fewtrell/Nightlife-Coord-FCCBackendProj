@@ -4,6 +4,7 @@ const path = require("path")
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const mongoose = require('mongoose')
+const serveStatic = require('serve-static')
 
 const app = express()
 var jwt = require('jsonwebtoken')
@@ -14,8 +15,10 @@ var Attendance = require('./attendance.js')
 mongoose.connect(config.database)
 app.set('superSecret', config.secret)
 
-app.use(express.static(path.join(__dirname, '/public')))
-app.use('/vue', express.static(__dirname + '/node_modules/vue/dist'));
+// Previous vuejs stuff in public folder
+//app.use(express.static(path.join(__dirname, '/public')))
+//app.use('/vue', express.static(__dirname + '/node_modules/vue/dist'));
+app.use("/", serveStatic ( path.join (__dirname, '/web-app/dist') ) )
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -66,9 +69,9 @@ function resultData(success, message, others = null) {
 //---------------------------------------------------------
 
 
-app.get('/', function(req, res, next) {
+/*app.get('/', function(req, res, next) {
   res.sendFile('/public/index.html')
-})
+})*/
 app.get('/test', function(req, res, next) {
   res.send("this works")
 })
