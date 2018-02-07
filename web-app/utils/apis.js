@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:23200';
+const BASE_URL = 'https://marekfewtrell-nightlifecoord.herokuapp.com';
 
 export { getPlacesApi, putAttendanceApi, deleteAttendanceApi };
 
