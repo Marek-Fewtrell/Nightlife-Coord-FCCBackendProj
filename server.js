@@ -12,7 +12,7 @@ var config = require('./config')
 var User = require('./user.js')
 var Attendance = require('./attendance.js')
 
-mongoose.connect(config.database)
+mongoose.connect(process.env.MONGOURL || config.database)
 app.set('superSecret', config.secret)
 
 // Previous vuejs stuff in public folder
